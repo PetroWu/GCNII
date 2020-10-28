@@ -38,6 +38,21 @@ class GraphConvolution(nn.Module):
             output = output+input
         return output
 
+class GraphConvolutionVriant(nn.Module):
+    def __init__(self, in_features, out_features, org_features):
+        super(GraphConvolution, self).__init__()
+        self.out_features = out_features
+        self.reset_parameters()
+        self.w1 = Parameter(torch.FloatTensor(in_features, out_features))
+        self.w2 = Parameter(torch.FloatTensor(org_features, out_features))
+
+    def reset_parameters(self):
+        stdv = 1. / math.sqrt(self.out_features)
+        self.weight.data.uniform_(-stdv, stdv)
+
+    def forward(self, input, adj , h0 , lamda, alpha, l):
+        beta = math.log(lamda/l+1)
+
 class GCNII(nn.Module):
     def __init__(self, nfeat, nlayers,nhidden, nclass, dropout, lamda, alpha, variant):
         super(GCNII, self).__init__()
